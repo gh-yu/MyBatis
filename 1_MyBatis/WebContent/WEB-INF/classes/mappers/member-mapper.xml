@@ -23,7 +23,7 @@
 	<!-- DB의 컬럼과 클래스의 필드를 매핑시켜줄 때 사용 -->
 	<!-- 일치해도 매핑시켜주는 것이 좋음(가끔 에러나기 때문) -->
 	<resultMap type="member.model.vo.Member" id="memberResultSet">
-		<id column="USER_PWD" property="userId"/> <!-- 기본 키 -->
+		<id column="USER_ID" property="userId"/> <!-- 기본 키 -->
 		<result column="USER_PWD" property="userPwd"/> <!-- 일반 컬럼 -->
 		<result column="USER_NAME" property="userName"/>
 		<result column="NICKNAME" property="nickName"/>
@@ -37,10 +37,37 @@
 		<result column="M_STATUS" property="mStatus"/>
 	</resultMap>
 	
-	<insert id="insertMember" parameterType="member.model.vo.Member" resultType="_int">
-		insert into member values(#{userId}, #{userPwd}, #{userName}, #{nickName}
+	<!-- insert문의 반환값 int -> resultType명시 X --> 
+	<!-- (resultType="_int"는 필요X) Attribute "resultType" must be declared for element type "insert". -->
+	<!-- DML문의 반환값은 무조건 int값 -> 그래서 insert, update, delete일 경우는 resultType 지정X, select일 때만 지정 -->
+	<insert id="insertMember" parameterType="member.model.vo.Member"> 
+		insert into member values(#{userId}, #{userPwd}, #{userName}, #{nickName},
 								  #{email}, #{birthDay}, #{gender}, #{phone}, #{address}, 
-								  SYSDATE, SYSDATE, DEFAULT);
+								  SYSDATE, SYSDATE, DEFAULT)
 	</insert>
 	
+	<update id="updateMember" parameterType="Member"> <!-- mybatis-config에서 별칭 지정했음 -->
+		update member
+		set user_name=#{userName}, nickName=#{nickName}, email=#{email}, birthDay=#{birthDay},
+			gender=#{gender}, phone=#{phone}, address=#{address}, update_date=SYSDATE
+		where user_id=#{userId}
+	</update> <!-- 보내주는 값이 성공 실패 1 또는 0 int값이기 때문에, resultType 또는 resultMap 필요x -->
+	
+	<update id="updatePwd" parameterType="map"> 
+		update Member
+		set user_pwd=#{newPwd}
+		where user_id=#{userId} and user_pwd=#{userPwd}
+	</update> <!-- HashMap을 보냈을때는  parameterType="map" -->
+
+<!-- 	<update id="updatePwd" parameterType="Member">
+		update member
+		set user_pwd=#{userPwd}
+		where user_id=#{userId}
+	</update> -->
+	
+	<update id="deleteMember" parameterType="string">
+		update Member
+		set m_status = 'N'
+		where user_id = #{userId}
+	</update>
 </mapper>

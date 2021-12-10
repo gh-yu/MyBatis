@@ -9,21 +9,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import member.model.exception.MemberException;
 import member.model.service.MemberService;
 import member.model.vo.Member;
 
 /**
- * Servlet implementation class MemberInsertServlet
+ * Servlet implementation class MemberUpdateServlet
  */
-@WebServlet("/minsert.me")
-public class MemberInsertServlet extends HttpServlet {
+@WebServlet("/mupdate.me")
+public class UpdateMemberServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MemberInsertServlet() {
+    public UpdateMemberServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,29 +34,33 @@ public class MemberInsertServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userId = request.getParameter("userId");
-		String userPwd = request.getParameter("userPwd");
+		HttpSession session = request.getSession();
+		Member member = (Member)session.getAttribute("loginUser");
+		String userId = member.getUserId();
 		String userName = request.getParameter("userName");
 		String nickName = request.getParameter("nickName");
 		String email = request.getParameter("email");
 		String phone = request.getParameter("phone");
 		String address = request.getParameter("address");
 		String gender = request.getParameter("gender");
-
+		
 		int year =  Integer.parseInt(request.getParameter("year"));
 		int month =  Integer.parseInt(request.getParameter("month")) - 1; // 1월이 0이기 때문
 		int date =  Integer.parseInt(request.getParameter("date"));
 		
 		Date birthDay = new Date(new GregorianCalendar(year, month, date).getTimeInMillis());
 		
-		Member m = new Member(userId, userPwd, userName, nickName, email, birthDay, gender, phone, address, null, null, null);
-		System.out.println(m);
-		int result = new MemberService().insertMember(m);
+		Member m = new Member(userId, null, userName, nickName, email, birthDay, gender, phone, address, null, null, null);
 		
-		if (result > 0) {
-			
-		} else {
-			
+		MemberService service = new MemberService();
+		try {
+			service.updateMember(m);
+			Member loginUser = service.selectMember(member);
+			session.setAttribute("loginUser", loginUser);
+			response.sendRedirect(request.getContextPath() + "/info.me");
+		} catch (MemberException e) {
+			request.setAttribute("message", e.getMessage());
+			request.getRequestDispatcher("WEB-INF/views/common/errorPage.jsp").forward(request, response);
 		}
 	}
 

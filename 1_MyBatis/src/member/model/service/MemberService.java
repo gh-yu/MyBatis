@@ -2,6 +2,8 @@ package member.model.service;
 
 import static common.Template.getSqlSession;
 
+import java.util.HashMap;
+
 import org.apache.ibatis.session.SqlSession;
 
 import member.model.dao.MemberDAO;
@@ -23,14 +25,42 @@ public class MemberService {
 		return member;
 	}
 
-	public int insertMember(Member m) {
+	public void insertMember(Member m) throws MemberException {
 		SqlSession session = getSqlSession();
 		
-		int result = mDAO.insertMember(session, m);
+		mDAO.insertMember(session, m);
 		
+		session.commit(); 
+		// DAO에서 insert실패시 rollback하는 코드 작성했기 때문에 여기서는 commit만
 		session.close();
+	}
+
+	public void updateMember(Member m) throws MemberException {
+		SqlSession session = getSqlSession();
 		
-		return result;
+		mDAO.updateMember(session, m);
+		
+		session.commit();
+		session.close();
+			
+	}
+
+	public void updatePwd(HashMap<String, String> map) throws MemberException {
+		SqlSession session = getSqlSession();
+		
+		mDAO.updatePwd(session, map);
+		
+		session.commit();
+		session.close();		
+	}
+
+	public void deleteMember(String userId) throws MemberException {
+		SqlSession session = getSqlSession();
+		
+		mDAO.deleteMember(session, userId);
+		
+		session.commit();
+		session.close();
 	}
 
 }
