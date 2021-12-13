@@ -1,4 +1,4 @@
-package member.controller;
+package board.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -7,21 +7,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import member.model.exception.MemberException;
-import member.model.service.MemberService;
-import member.model.vo.Member;
+import board.model.exception.BoardException;
+import board.model.service.BoardService;
+import board.model.vo.Board;
 
 /**
- * Servlet implementation class deleteMemberServlet
+ * Servlet implementation class BoardDetailServlet
  */
-@WebServlet("/delete.me")
-public class DeleteMemberServlet extends HttpServlet {
+@WebServlet("/selectOne.bo")
+public class BoardDetailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DeleteMemberServlet() {
+    public BoardDetailServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,15 +30,25 @@ public class DeleteMemberServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userId = ((Member)request.getSession().getAttribute("loginUser")).getUserId();	
+		int bId = Integer.parseInt(request.getParameter("bId"));
 		
 		try {
-			new MemberService().deleteMember(userId);
-			response.sendRedirect(request.getContextPath() + "/logout.me"); // 여기서 session.invalidate()하지 않고 대신 url요청한 것(수업 방식은 여기서 invalidate)
-		} catch (MemberException e) {
+			Board b = new BoardService().selectBoardDetail(bId);
+			
+			int rCount = 0;
+			if (!b.getReplyList().isEmpty()) {
+				rCount = b.getReplyList().size();
+			}
+			request.setAttribute("b", b);
+			request.setAttribute("rCount", rCount);
+			System.out.println(b);
+			
+			request.getRequestDispatcher("WEB-INF/views/board/boardDetail.jsp").forward(request, response);
+		} catch (BoardException e) {
 			request.setAttribute("message", e.getMessage());
 			request.getRequestDispatcher("WEB-INF/views/common/errorPage.jsp").forward(request, response);
 		}
+		
 	}
 
 	/**

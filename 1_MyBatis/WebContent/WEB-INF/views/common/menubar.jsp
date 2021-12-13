@@ -14,6 +14,12 @@
 	.loginTable{text-align: right; float: right;}
 	#logoutBtns>a{text-decoration: none; color: black;}
 	#logoutBtns>a:hover{text-decoration: underline; font-weight: bold;}
+	.nav-area{background: black; height: 50px;}
+	.menu{
+		display: table-cell; width: 250px; height: 50px; text-align: center;
+		vertical-align: middle; font-size: 20px; background: black; color: white;
+	}
+	.menu:hover{background: orangered; cursor: pointer;}
 </style>
 </head>
 <body>
@@ -67,10 +73,18 @@
 		</c:if>
 	</div>
 	
+	<!-- 2. 게시판 관련 서비스 -->
+	<div class="nav-area" align="center">
+		<div class="menu" onclick="location.href='${contextPath}'">HOME</div>
+		<div class="menu" onclick="location.href='${contextPath}/selectList.bo'">BOARD</div>
+		<div class="menu">etc.</div>
+	</div>	
+		
 	<script>
 		function home(){
 			location.href="${ contextPath }";
 		}
 	</script>
+
 </body>
 </html>

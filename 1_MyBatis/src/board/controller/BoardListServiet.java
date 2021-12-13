@@ -1,27 +1,31 @@
-package member.controller;
+package board.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import member.model.exception.MemberException;
-import member.model.service.MemberService;
-import member.model.vo.Member;
+import board.model.exception.BoardException;
+import board.model.service.BoardService;
+import board.model.vo.Board;
+import board.model.vo.PageInfo;
+import common.Pagination;
 
 /**
- * Servlet implementation class deleteMemberServlet
+ * Servlet implementation class BoardListServiet
  */
-@WebServlet("/delete.me")
-public class DeleteMemberServlet extends HttpServlet {
+@WebServlet("/selectList.bo")
+public class BoardListServiet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DeleteMemberServlet() {
+    public BoardListServiet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,15 +34,29 @@ public class DeleteMemberServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userId = ((Member)request.getSession().getAttribute("loginUser")).getUserId();	
+		BoardService bService = new BoardService();
+		
+		int currentPage = 1;
+		if (request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
 		
 		try {
-			new MemberService().deleteMember(userId);
-			response.sendRedirect(request.getContextPath() + "/logout.me"); // 여기서 session.invalidate()하지 않고 대신 url요청한 것(수업 방식은 여기서 invalidate)
-		} catch (MemberException e) {
-			request.setAttribute("message", e.getMessage());
+			int listCount = bService.getListCount();
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+			
+			ArrayList<Board> list = bService.selectBoardList(pi);
+
+			request.setAttribute("pi", pi);
+			request.setAttribute("list", list);
+			
+			request.getRequestDispatcher("WEB-INF/views/board/boardList.jsp").forward(request, response);
+			
+		} catch (BoardException e) {
+			request.setAttribute("massage", e.getMessage());
 			request.getRequestDispatcher("WEB-INF/views/common/errorPage.jsp").forward(request, response);
 		}
+		
 	}
 
 	/**

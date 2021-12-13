@@ -12,6 +12,8 @@
 	
 	<typeAliases> <!-- class에 대한 별칭 지정 -->
 		<typeAlias type="member.model.vo.Member" alias="Member"/>
+		<typeAlias type="board.model.vo.Board" alias="Board"/>
+		<typeAlias type="board.model.vo.Reply" alias="Reply"/>
 	</typeAliases>
 	
 	<!-- DB에 연결할 설정에 대한 정보 선언 -->
@@ -57,6 +59,7 @@
 	<!-- mapper파일들을 등록 -->
 	<mappers>
 		<mapper resource="/mappers/member-mapper.xml"/>
+		<mapper resource="mappers/board-mapper.xml"/> <!-- 앞의 /는 있어도, 없어도 됨 -->
 	</mappers>
 	
 	
