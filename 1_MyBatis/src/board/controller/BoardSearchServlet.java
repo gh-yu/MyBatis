@@ -19,7 +19,7 @@ import common.Pagination;
 /**
  * Servlet implementation class BoardSearchServlet
  */
-@WebServlet("/BoardSearchServlet")
+@WebServlet("/search.bo")
 public class BoardSearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -39,10 +39,10 @@ public class BoardSearchServlet extends HttpServlet {
 		BoardService service = new BoardService();
 		
 		String condition = request.getParameter("searchCondition");
-		String value = request.getParameter("searchValue");
+		String value = request.getParameter("searchValue"); // trim처리 필요?
 		
 		HashMap<String, String> map = new HashMap<>();
-		map.put("conditon", condition);
+		map.put("condition", condition); // 여기 오타 나서 map에 conditon이라고 잘못 담겨 값이 잘못 나옴
 		map.put("value", value);
 		
 		int currentPage = 1;

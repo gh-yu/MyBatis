@@ -55,7 +55,11 @@
 				<c:if test="${ pi.currentPage > 1 }">
 					<c:url value="${ loc }" var="blistFirst"> 
 						<c:param name="currentPage" value="${ 1 }"/>
-					</c:url>
+						<c:if test="${ searchValue ne null }"> <!-- null이 아니면 검색을 했다는 뜻 -->
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>
+					</c:url>					
 					<a href="${ blistFirst }">[처음]</a>
 				</c:if>
 				<!-- 이전 -->
@@ -67,6 +71,10 @@
 					<!-- url을 직접 써주는게 위험할 수 있기 때문-->
 					<c:url value="${ loc }" var="blistBack"> 
 						<c:param name="currentPage" value="${ pi.currentPage - 1 }"/>
+						<c:if test="${ searchValue ne null }"> <!-- null이 아니면 검색을 했다는 뜻 -->
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>
 					</c:url>
 					<%-- <a href="selectList.bo?currentPage=${ pi.currentPage - 1 }">[이전]</a>  --%>
 					<a href="${ blistBack }">[이전]</a>
@@ -77,6 +85,10 @@
 					<c:if test="${ p ne pi.currentPage }">
 						<c:url var="blistCheck" value="${ loc }">
 							<c:param name="currentPage" value="${ p }"/>
+							<c:if test="${ searchCondition ne null }"> <!-- null이 아니면 검색을 했다는 뜻 -->
+								<c:param name="searchCondition" value="${ searchCondition }"/>
+								<c:param name="searchValue" value="${ searchValue }"/>
+							</c:if>							
 						</c:url>
 						<a href="${ blistCheck }"> ${ p } </a>
 					</c:if> 
@@ -87,6 +99,10 @@
 				<c:if test="${ pi.currentPage < pi.maxPage }">
 					<c:url value="${ loc }" var="blistNext">
 						<c:param name="currentPage" value="${ pi.currentPage + 1 }"/>
+						<c:if test="${ searchValue ne null }"> <!-- null이 아니면 검색을 했다는 뜻 -->
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>	
 					</c:url>
 					<a href="${ blistNext }">[다음]</a>
 				</c:if>
@@ -95,6 +111,10 @@
 				<c:if test="${ pi.currentPage < pi.maxPage }">
 					<c:url value="${ loc }" var="blistLast"> 
 						<c:param name="currentPage" value="${ pi.maxPage }"/>
+						<c:if test="${ searchValue ne null }"> <!-- null이 아니면 검색을 했다는 뜻 -->
+							<c:param name="searchCondition" value="${ searchCondition }"/>
+							<c:param name="searchValue" value="${ searchValue }"/>
+						</c:if>	
 					</c:url>
 					<a href="${ blistLast }">[끝]</a>
 				</c:if>			

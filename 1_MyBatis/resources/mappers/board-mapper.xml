@@ -75,21 +75,20 @@
 		<result column="R_STATUS" property="rStatus"/>		
 	</resultMap>
 	
-	<select id="getSearchResultListCount" parameterType="hashmap" resultType="_int">
+	<select id="getSearchResultListCount" resultType="_int">
 		select count(*)
 		from board b
 		     join member on(bwriter = user_id)
 		where b_status = 'Y'
 		<if test="condition == 'writer'">
-			  and nickname=#{value}
-		</if>
+			  and nickname = #{value}
+		</if>		
 		<if test="condition == 'title'">
 			  and btitle like '%' || #{value} || '%'
 		</if>			 
 		<if test="condition == 'content'">
 			  and bcontent like '%' || #{value} || '%'
 		</if>
-			 
 	</select>
 	
 	<select id="selectSearchResultList" parameterType="hashmap" resultMap="boardResultSet2">
@@ -99,8 +98,8 @@
 			 join member on(bwriter = user_id)
 	    where b_status = 'Y'
 	    <choose>
-	    	<when test="condition == 'wrtier'">
-	    		and nickname=#{value}
+	    	<when test="condition == 'writer'">
+	    		and nickname = #{value}
 	    	</when>
 	    	<when test="condition == 'title'">
 	    		and btitle like '%' || #{value} || '%'
@@ -108,7 +107,7 @@
 	    	<otherwise>
 	    		and bcontent like '%' || #{value} || '%'
 	    	</otherwise>
-<!-- 	    	<otherwise> 만약 전체검색이라면 어떻게??
+<!-- 	    	<otherwise> 
 	    		and (nickname=#{value} or btitle like '%' || #{value} || '%' or bcontent like '%' || #{value} || '%')
 	    	</otherwise> -->
 	    </choose>

@@ -10,6 +10,11 @@
  	
 	<properties resource="/driver.properties"/>
 	
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings> <!-- 파라미터가 null로 들어온 경우 쿼리 실행될때 (null허용 컬럼일 경우) 
+					 DB에서 NULL로 인식할 수 있도록  -->
+	
 	<typeAliases> <!-- class에 대한 별칭 지정 -->
 		<typeAlias type="member.model.vo.Member" alias="Member"/>
 		<typeAlias type="board.model.vo.Board" alias="Board"/>
